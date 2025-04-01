@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Tipo de Piel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .question-container {
+            display: none;
+            margin: 20px auto;
+            max-width: 500px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 2px 2px 12px rgba(0,0,0,0.1);
+        }
+        .options button {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            background-color: #f0f0f0;
+        }
+        .options button.selected {
+            background-color: green;
+            color: white;
+        }
+        .next-btn {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: blue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .result-container {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="quiz-container">
+        <div id="question" class="question-container animate__animated animate__fadeIn"></div>
+        <div id="options" class="options"></div>
+        <button id="next-btn" class="next-btn" onclick="nextQuestion()">Siguiente</button>
+    </div>
+    <div id="result-container" class="result-container animate__animated animate__fadeIn"></div>
+    
+    <script>
+        const questions = [
+            { q: "¿Cómo se siente tu piel al despertar?", options: ["Grasosa", "Normal", "Seca", "Mixta"] },
+            { q: "¿Tu piel se irrita fácilmente?", options: ["Sí", "No"] },
+            { q: "¿Tienes poros visibles en tu rostro?", options: ["Sí, muy grandes", "Algunos", "Casi no"] },
+            { q: "¿Sientes que tu piel brilla mucho durante el día?", options: ["Sí", "No"] },
+            { q: "¿Cómo reacciona tu piel a productos nuevos?", options: ["Se irrita", "Sin cambios", "Se hidrata"] },
+            { q: "¿Tu piel tiende a descamarse en ciertas áreas?", options: ["Sí", "No"] },
+            { q: "¿Cuántos años tienes?", options: ["27-35", "36-45", "46-60"] },
+            { q: "¿Tienes líneas de expresión marcadas?", options: ["Sí", "No"] },
+            { q: "¿Sientes tu piel tensa después de lavar tu cara?", options: ["Sí", "No"] },
+            { q: "¿Cuál es tu principal preocupación sobre tu piel?", options: ["Arrugas", "Manchas", "Acné", "Hidratación"] }
+        ];
+
+        let currentQuestion = 0;
+        let answers = [];
+
+        function loadQuestion() {
+            document.getElementById("question").innerHTML = `<h3>${questions[currentQuestion].q}</h3>`;
+            const optionsContainer = document.getElementById("options");
+            optionsContainer.innerHTML = "";
+            questions[currentQuestion].options.forEach((option, index) => {
+                const button = document.createElement("button");
+                button.innerText = option;
+                button.onclick = () => selectAnswer(button, option);
+                optionsContainer.appendChild(button);
+            });
+            document.getElementById("next-btn").style.display = "none";
+        }
+
+        function selectAnswer(button, answer) {
+            answers[currentQuestion] = answer;
+            document.querySelectorAll(".options button").forEach(btn => btn.classList.remove("selected"));
+            button.classList.add("selected");
+            document.getElementById("next-btn").style.display = "block";
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById("quiz-container").style.display = "none";
+            document.getElementById("result-container").style.display = "block";
+            let recommendation = "";
+            if (answers.includes("Grasosa")) {
+                recommendation = "Tu piel es grasa. Se recomienda una limpieza facial profunda y productos matificantes.";
+            } else if (answers.includes("Seca")) {
+                recommendation = "Tu piel es seca. Se recomienda un tratamiento hidratante y cremas nutritivas.";
+            } else if (answers.includes("Mixta")) {
+                recommendation = "Tu piel es mixta. Un tratamiento equilibrante será ideal para ti.";
+            } else {
+                recommendation = "Tu piel es normal. Mantén una rutina de cuidado básica con limpieza e hidratación.";
+            }
+            document.getElementById("result-container").innerHTML = `<h2>Resultado</h2><p>${recommendation}</p>`;
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
